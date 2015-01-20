@@ -15,22 +15,26 @@ try {
 	fs.unlinkSync(path.join(testPath, "a"));
 } catch(e) {}
 
-var watcher = chokidar.watch(testPath, {
-	ignoreInitial: true,
-	persistent: true,
-	followSymlinks: false,
-	depth: 0,
-	ignorePermissionErrors: true
-});
-watcher.on("add", onFileAdded);
-watcher.on("addDir", onDirectoryAdded);
-watcher.on("change", onChange);
-watcher.on("unlink", onFileUnlinked);
-watcher.on("unlinkDir", onDirectoryUnlinked);
-watcher.on("error", onWatcherError);
+var watcher;
 
 async.series([
 	function(callback) {
+		setTimeout(callback, 1000);
+	},
+	function(callback) {
+		watcher = chokidar.watch(testPath, {
+			ignoreInitial: true,
+			persistent: true,
+			followSymlinks: false,
+			depth: 0,
+			ignorePermissionErrors: true
+		});
+		watcher.on("add", onFileAdded);
+		watcher.on("addDir", onDirectoryAdded);
+		watcher.on("change", onChange);
+		watcher.on("unlink", onFileUnlinked);
+		watcher.on("unlinkDir", onDirectoryUnlinked);
+		watcher.on("error", onWatcherError);
 		setTimeout(callback, 1000);
 	},
 	function(callback) {
